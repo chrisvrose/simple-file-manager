@@ -6,6 +6,11 @@
  * Liscense: MIT
  ********************************/
 
+
+
+// Made by jcampbell1, and edited by EduardoOliceira and chrisvrose
+
+
 /* Uncomment section below, if you want a trivial password protection */
 
 /*
@@ -22,6 +27,16 @@ if(!$_SESSION['_sfm_allowed']) {
 	exit;
 }
 */
+
+// Whether to show Permissions and Last modified. 
+// 0 to disable and 1 to enable. Use 0 if you plan to use on mobile devices
+$SHOWEXTRA = 0;
+
+// Whether to show icons or not. Preferable to leave as 0 if on mobile.
+$SHOWICONS = 0;
+
+// Whether to show action text or not. If enabled, action icons will be forced to show.
+$SAT = 0;
 
 // must be in UTF-8 or `basename` doesn't work
 setlocale(LC_ALL, 'en_US.UTF-8');
@@ -170,6 +185,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
     <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
     <style>
         .btn-file {
@@ -194,6 +210,9 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         }
         a{
             text-decoration:none !important;
+        }
+        .perms,.lmod{
+            <?php if($SHOWINFO==0)echo'display:none;';?>
         }
     </style>
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -373,15 +392,15 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
             function renderFileRow(data) {
                 var $link = $('<a class="name" />')
                     .attr('href', data.is_dir ? '#' + data.path : './' + data.path)
-                    .html('<span class="glyphicon '+(data.is_dir ? 'glyphicon-folder-open' : 'glyphicon-file')
-                    +'" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;'+data.name);
+                    .html('<?php if($SHOWICONS!=0) echo '<span class=\"glyphicon \'+(data.is_dir ? \'glyphicon-folder-open\' : \'glyphicon-file\')
+                    +\'\" aria-hidden=\"true\"></span>'; ?>&nbsp;&nbsp;&nbsp;'+data.name);
 
                 var $zip_link = '<a href="#" data-file="'+data.path+'"  class="zip">' +
-                    '<span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>&nbsp;&nbsp;zip</a>&nbsp;&nbsp;&nbsp;';
+                    '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-briefcase\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'zip';?></a>&nbsp;&nbsp;&nbsp;';
                 var $dl_link = '<a href="?do=download&file='+encodeURIComponent(data.path)+'">' +
-                    '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp;&nbsp;download</a>&nbsp;&nbsp;&nbsp;';
+                    '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-download-alt\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'download';?></a>&nbsp;&nbsp;&nbsp;';
                 var $delete_link = '<a href="#" data-file="'+data.path+'"  class="delete">' +
-                    '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;&nbsp;delete</a>';
+                    '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'delete';?></a>';
 
                 var perms = [];
                 if (data.is_readable) perms.push('read');
@@ -392,8 +411,8 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
                     .append($('<td class="first" />').append($link))
                     .append($('<td/>').attr('data-sort', data.is_dir ? -1 : data.size)
                         .html($('<span class="size" />').text(formatFileSize(data.size))))
-                    .append($('<td/>').attr('data-sort', data.mtime).text(formatTimestamp(data.mtime)))
-                    .append($('<td/>').text(perms.join('+')))
+                    .append($('<td/>').addClass('lmod').attr('data-sort', data.mtime).text(formatTimestamp(data.mtime)))
+                    .append($('<td/>').addClass('perms').text(perms.join('+')))
                     .append($('<td/>').append(data.is_dir ? $zip_link : $dl_link).append(data.is_deleteable ? $delete_link : ''))
                 return $html;
             }
@@ -420,17 +439,17 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
             }
 
             function formatFileSize(bytes) {
-                var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+                var s = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
                 for (var pos = 0; bytes >= 1000; pos++, bytes /= 1024);
                 var d = Math.round(bytes * 10);
-                return pos ? [parseInt(d / 10), ".", d % 10, " ", s[pos]].join('') : bytes + ' bytes';
+                return pos ? [parseInt(d / 10), ".", d % 10, " ", s[pos]].join('') : bytes + ' B';
             }
         })
 
     </script>
 </head>
 <body id="file_drop_target">
-<nav class="navbar navbar-fixed-top">
+<nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -466,8 +485,8 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         <tr>
             <th style='cursor:pointer;'>Name</th>
             <th style='cursor:pointer;'>Size</th>
-            <th style='cursor:pointer;'>Modified</th>
-            <th style='cursor:pointer;'>Permissions</th>
+            <th style='cursor:pointer;' class="lmod">Modified</th>
+            <th style='cursor:pointer;' class="perms">Permissions</th>
             <th style='cursor:pointer;'>Actions</th>
         </tr>
         </thead>
@@ -475,7 +494,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
 
         </tbody>
     </table>
-    <footer>simple php filemanager by <a href="https://github.com/jcampbell1">jcampbell1</a> and tweaked by <a href="https://github.com/EduardoOliveira">EduardoOliveira</a> <footer>
+    <!--<footer>simple php filemanager by <a href="https://github.com/jcampbell1">jcampbell1</a> and tweaked by <a href="https://github.com/EduardoOliveira">EduardoOliveira</a> and chrisvrose<footer>-->
 </div>
 </body>
 </html>

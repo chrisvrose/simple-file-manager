@@ -14,6 +14,7 @@ Just copy `index.php` to a folder on your webserver.
 - The interface is usable from an iPad
 - XSRF protection (though no authentication system)
 - Custmizable with bootstrap themes (https://bootswatch.com/)
+- PHP Variables to customize slight bits of UI to personal preferences
 
 ## Screenshot
 
