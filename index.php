@@ -170,7 +170,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <link href="https://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
     <style>
         .btn-file {
             position: relative;
@@ -191,6 +191,10 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
             background: white;
             cursor: inherit;
             display: block;
+        }
+        a{
+            color:white !important;
+            text-decoration:none !important;
         }
     </style>
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
