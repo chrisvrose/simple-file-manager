@@ -193,7 +193,6 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
             display: block;
         }
         a{
-            color:white !important;
             text-decoration:none !important;
         }
     </style>
