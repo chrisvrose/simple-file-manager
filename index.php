@@ -28,6 +28,11 @@ if(!$_SESSION['_sfm_allowed']) {
 }
 */
 
+// Whether to show size of the folder and directory. NOTE: THE SIZE REPORTED IS INCORRECT
+// 0 to disable, can be disabled only if $SHOWEXTRA is 0
+$SHOWSIZE = 0;
+
+
 // Whether to show Permissions and Last modified. 
 // 0 to disable and 1 to enable. Use 0 if you plan to use on mobile devices
 $SHOWEXTRA = 0;
@@ -211,7 +216,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         a{
             text-decoration:none !important;
         }
-        .perms,.lmod{
+        <?php if($SHOWSIZE==0) echo '.lsize,';?>.perms,.lmod{
             <?php if($SHOWINFO==0)echo'display:none;';?>
         }
     </style>
@@ -409,7 +414,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
                 var $html = $('<tr />')
                     .addClass(data.is_dir ? 'is_dir' : '')
                     .append($('<td class="first" />').append($link))
-                    .append($('<td/>').attr('data-sort', data.is_dir ? -1 : data.size)
+                    .append($('<td/>').addClass('lsize').attr('data-sort', data.is_dir ? -1 : data.size)
                         .html($('<span class="size" />').text(formatFileSize(data.size))))
                     .append($('<td/>').addClass('lmod').attr('data-sort', data.mtime).text(formatTimestamp(data.mtime)))
                     .append($('<td/>').addClass('perms').text(perms.join('+')))
@@ -484,7 +489,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         <thead>
         <tr>
             <th style='cursor:pointer;'>Name</th>
-            <th style='cursor:pointer;'>Size</th>
+            <th style='cursor:pointer;' class="lsize">Size</th>
             <th style='cursor:pointer;' class="lmod">Modified</th>
             <th style='cursor:pointer;' class="perms">Permissions</th>
             <th style='cursor:pointer;'>Actions</th>
