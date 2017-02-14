@@ -170,7 +170,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.4/slate/bootstrap.min.css" rel="stylesheet">
+    <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
     <style>
         .btn-file {
             position: relative;
