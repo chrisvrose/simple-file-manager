@@ -28,6 +28,10 @@ if(!$_SESSION['_sfm_allowed']) {
 }
 */
 
+
+//Whether to show the '/' at the end of directories
+$SDS = 1;
+
 // Whether to show size of the folder and directory. NOTE: THE SIZE REPORTED IS INCORRECT
 // 0 to disable, can be disabled only if $SHOWEXTRA is 0
 $SHOWSIZE = 0;
@@ -398,7 +402,7 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
                 var $link = $('<a class="name" />')
                     .attr('href', data.is_dir ? '#' + data.path : './' + data.path)
                     .html('<?php if($SHOWICONS!=0) echo '<span class=\"glyphicon \'+(data.is_dir ? \'glyphicon-folder-open\' : \'glyphicon-file\')
-                    +\'\" aria-hidden=\"true\"></span>'; ?>&nbsp;&nbsp;&nbsp;'+data.name);
+                    +\'\" aria-hidden=\"true\"></span>'; ?>&nbsp;&nbsp;&nbsp;'+data.name <?php if($SDS==1) echo '+ (data.is_dir?\'/\': \'\') '; ?>);
 
                 var $zip_link = '<a href="#" data-file="'+data.path+'"  class="zip">' +
                     '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-briefcase\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'zip';?></a>&nbsp;&nbsp;&nbsp;';
