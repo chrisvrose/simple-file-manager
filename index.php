@@ -47,6 +47,7 @@ $SHOWICONS = 0;
 // Whether to show action text or not. If enabled, action icons will be forced to show.
 $SAT = 0;
 
+
 // must be in UTF-8 or `basename` doesn't work
 setlocale(LC_ALL, 'en_US.UTF-8');
 
@@ -69,7 +70,7 @@ if ($_GET['do'] == 'list') {
         $directory = $file;
         $result = array();
         $files = array_diff(scandir($directory), array('.', '..'));
-        foreach ($files as $entry) {
+        foreach ($files as $entry) if($entry !== basename(__FILE__)) {
             $i = $directory . '/' . $entry;
             $stat = stat($i);
             $result[] = array(
