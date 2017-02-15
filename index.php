@@ -463,7 +463,6 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
             }
 
             function formatFileSize(bytes,isdir) {
-                console.log(isdir);
                 var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
                 for (var pos = 0; bytes >= 1000; pos++, bytes /= 1024);
                 var d = Math.round(bytes * 10);
