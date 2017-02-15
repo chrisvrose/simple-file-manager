@@ -29,16 +29,11 @@ if(!$_SESSION['_sfm_allowed']) {
 */
 
 
-//Whether to show the '/' at the end of directories
+// Whether to show the '/' at the end of directories
 $SDS = 1;
 
-
-// Whether to show icons or not. Preferable to leave as 0 if on mobile.
-$SHOWICONS = 0;
-
-// Whether to show action text or not. If enabled, action icons will be forced to show.
-$SAT = 0;
-
+// Show entry icons
+$SHOWICONS=1;
 
 // must be in UTF-8 or `basename` doesn't work
 setlocale(LC_ALL, 'en_US.UTF-8');
@@ -213,18 +208,32 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         a{
             text-decoration:none !important;
         }
-        @media (max-width: 970px){
+        .is_dir .first a.name{
+            color: #b8fbea;
+        }
+        @media (max-width: 970px){ /* For mobiles and tabs */
             .table{
                 table-layout: fixed;
             }
             .first{
                 overflow-x:auto;
             }
-            .perms,.lmod{
+            .lperms,.lmod{
+                display:none;
+            }
+            .lsize{
+                width:8em;
+            }
+            .lactions{
+                width:5em;
+            }
+            .lzip,.ldown,.ldel{
                 display:none;
             }
         }
-        @media (max-width: 750px){
+        @media (min-width: 971px ){ /* For desktops and above */
+        }
+        @media (max-width: 750px){ /* Explicitly phones */
             .lsize{
                 display:none;
             }
@@ -411,11 +420,11 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
                     +\'\" aria-hidden=\"true\"></span>'; ?>&nbsp;&nbsp;&nbsp;'+data.name <?php if($SDS==1) echo '+ (data.is_dir?\'/\': \'\') '; ?>);
 
                 var $zip_link = '<a href="#" data-file="'+data.path+'"  class="zip">' +
-                    '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-briefcase\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'zip';?></a>&nbsp;&nbsp;&nbsp;';
+                    '<span class=\"glyphicon glyphicon-briefcase\" aria-hidden=\"true\"></span>&nbsp;&nbsp; <span class=\"lzip\">zip</span> </a>&nbsp;&nbsp;&nbsp;';
                 var $dl_link = '<a href="?do=download&file='+encodeURIComponent(data.path)+'">' +
-                    '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-download-alt\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'download';?></a>&nbsp;&nbsp;&nbsp;';
+                    '<span class=\"glyphicon glyphicon-download-alt\" aria-hidden=\"true\"></span>&nbsp;&nbsp; <span class=\"ldown\">download</span> </a>&nbsp;&nbsp;&nbsp;';
                 var $delete_link = '<a href="#" data-file="'+data.path+'"  class="delete">' +
-                    '<?php if($SHOWICONS!=0 || $SAT==0)echo '<span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>' ;?>&nbsp;&nbsp;<?php if($SAT==1)echo 'delete';?></a>';
+                    '<span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>&nbsp;&nbsp; <span class="ldel">delete</span> </a>';
 
                 var perms = [];
                 if (data.is_readable) perms.push('read');
@@ -425,10 +434,10 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
                     .addClass(data.is_dir ? 'is_dir' : '')
                     .append($('<td class="first" />').append($link))
                     .append($('<td/>').addClass('lsize').attr('data-sort', data.is_dir ? -1 : data.size)
-                        .html($('<span class="size" />').text(formatFileSize(data.size))))
+                        .html($('<span class="size" />').text(formatFileSize(data.size,data.is_dir))))
                     .append($('<td/>').addClass('lmod').attr('data-sort', data.mtime).text(formatTimestamp(data.mtime)))
-                    .append($('<td/>').addClass('perms').text(perms.join('+')))
-                    .append($('<td/>').append(data.is_dir ? $zip_link : $dl_link).append(data.is_deleteable ? $delete_link : ''))
+                    .append($('<td/>').addClass('lperms').text(perms.join('+')))
+                    .append($('<td/>').addClass('lactions').append(data.is_dir ? $zip_link : $dl_link).append(data.is_deleteable ? $delete_link : ''))
                 return $html;
             }
 
@@ -453,11 +462,17 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
                     " ", d.getHours() >= 12 ? 'PM' : 'AM'].join('');
             }
 
-            function formatFileSize(bytes) {
-                var s = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+            function formatFileSize(bytes,isdir) {
+                console.log(isdir);
+                var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
                 for (var pos = 0; bytes >= 1000; pos++, bytes /= 1024);
                 var d = Math.round(bytes * 10);
-                return pos ? [parseInt(d / 10), ".", d % 10, " ", s[pos]].join('') : bytes + ' B';
+                if(bytes>0){
+                    return (isdir)?"":(pos ? [parseInt(d / 10), ".", d % 10, " ", s[pos]].join('') : bytes + ' B');
+                }
+                else{
+                    return "Large";
+                }
             }
         })
 
@@ -501,8 +516,8 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
             <th style='cursor:pointer;'>Name</th>
             <th style='cursor:pointer;' class="lsize">Size</th>
             <th style='cursor:pointer;' class="lmod">Modified</th>
-            <th style='cursor:pointer;' class="perms">Permissions</th>
-            <th style='cursor:pointer;'>Actions</th>
+            <th style='cursor:pointer;' class="lperms">Permissions</th>
+            <th style='cursor:pointer;' class="lactions">Actions</th>
         </tr>
         </thead>
         <tbody id="list">
