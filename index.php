@@ -32,14 +32,6 @@ if(!$_SESSION['_sfm_allowed']) {
 //Whether to show the '/' at the end of directories
 $SDS = 1;
 
-// Whether to show size of the folder and directory. NOTE: THE SIZE REPORTED IS INCORRECT
-// 0 to disable, can be disabled only if $SHOWEXTRA is 0
-$SHOWSIZE = 0;
-
-
-// Whether to show Permissions and Last modified. 
-// 0 to disable and 1 to enable. Use 0 if you plan to use on mobile devices
-$SHOWEXTRA = 0;
 
 // Whether to show icons or not. Preferable to leave as 0 if on mobile.
 $SHOWICONS = 0;
@@ -70,7 +62,7 @@ if ($_GET['do'] == 'list') {
         $directory = $file;
         $result = array();
         $files = array_diff(scandir($directory), array('.', '..'));
-        foreach ($files as $entry) if($entry !== basename(__FILE__)) {
+        foreach ($files as $entry) if(!($entry === basename(__FILE__) || $entry[0]==".")) {
             $i = $directory . '/' . $entry;
             $stat = stat($i);
             $result[] = array(
@@ -221,8 +213,21 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         a{
             text-decoration:none !important;
         }
-        <?php if($SHOWSIZE==0) echo '.lsize,';?>.perms,.lmod{
-            <?php if($SHOWINFO==0)echo'display:none;';?>
+        @media (max-width: 970px){
+            .table{
+                table-layout: fixed;
+            }
+            .first{
+                overflow-x:auto;
+            }
+            .perms,.lmod{
+                display:none;
+            }
+        }
+        @media (max-width: 750px){
+            .lsize{
+                display:none;
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
