@@ -15,6 +15,7 @@ Just copy `index.php` to a folder on your webserver.
 - XSRF protection (though no authentication system)
 - Custmizable with bootstrap themes (https://bootswatch.com/)
 - PHP Variables to customize slight bits of UI to personal preferences
+- Behaves nicely with phones and tablets.
 
 ## Screenshot
 
