@@ -185,6 +185,10 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
     <meta name="viewport" content="width=device-width">
     <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css?family=Noto+Sans');
+        body{
+            font-family: 'Noto Sans','Lato',sans-serif;
+        }
         .btn-file {
             position: relative;
             overflow: hidden;
@@ -210,6 +214,9 @@ $MAX_UPLOAD_SIZE = min(asBytes(ini_get('post_max_size')), asBytes(ini_get('uploa
         }
         .is_dir .first a.name{
             color: #b8fbea;
+        }
+        .name{
+            color: white;
         }
         @media (max-width: 970px){ /* For mobiles and tabs */
             .table{
