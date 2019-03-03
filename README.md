@@ -5,6 +5,8 @@ A Simple PHP file manager.  The code is a single php file.
 
 Just copy `index.php` to a folder on your webserver.
 
+`php5`
+
 ## Why it is good
 
 - Single file, there are no images, or css folders.  
